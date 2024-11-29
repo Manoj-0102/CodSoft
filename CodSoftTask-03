@@ -1,0 +1,73 @@
+ # Python code for random password generator
+
+import secrets
+import string
+
+def generate_password(length, use_uppercase, use_numbers, use_punctuation):
+    """
+    Generate a strong, random password.
+
+    Args:
+        length (int): Password length
+        use_uppercase (bool): Include uppercase letters
+        use_numbers (bool): Include numbers
+        use_punctuation (bool): Include punctuation
+
+    Returns:
+        str: Generated password
+    """
+
+    # Define character sets
+    chars = string.ascii_lowercase
+    if use_uppercase:
+        chars += string.ascii_uppercase
+    if use_numbers:
+        chars += string.digits
+    if use_punctuation:
+        chars += string.punctuation
+
+    # Ensure password includes at least one of each chosen character set
+    password = []
+    if use_uppercase:
+        password.append(secrets.choice(string.ascii_uppercase))
+    if use_numbers:
+        password.append(secrets.choice(string.digits))
+    if use_punctuation:
+        password.append(secrets.choice(string.punctuation))
+
+    # Fill the rest of the password length
+    for _ in range(length - len(password)):
+        password.append(secrets.choice(chars))
+
+    # Shuffle the list to avoid the first characters always being in the same character set order
+    secrets.SystemRandom().shuffle(password)
+
+    return "".join(password)
+
+def main():
+    print("Password Generator")
+    print("------------------")
+
+    # Get password length from user
+    while True:
+        try:
+            length = int(input("Enter password length (min 8): "))
+            if length < 8:
+                print("Password length must be at least 8 characters.")
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+    # Get password complexity from user
+    use_uppercase = input("Include uppercase letters? (y/n): ").lower() == "y"
+    use_numbers = input("Include numbers? (y/n): ").lower() == "y"
+    use_punctuation = input("Include punctuation? (y/n): ").lower() == "y"
+
+    # Generate password
+    password = generate_password(length, use_uppercase, use_numbers, use_punctuation)
+
+    print("Generated Password:", password)
+
+if __name__ == "__main__":
+    main()
